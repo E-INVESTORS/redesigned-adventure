@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>E-Investors Platform</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+
+<body>
+
+<header>
+<h1>E-Investors</h1>
+<p>Smart • Secure • Transparent Investments</p>
+</header>
+
+<nav>
+<button onclick="show('welcome')">Welcome</button>
+<button onclick="show('login')">Login</button>
+<button onclick="show('dashboard')">Dashboard</button>
+<button onclick="show('companies')">Companies</button>
+<button onclick="show('investors')">Investors</button>
+<button onclick="logout()">Logout</button>
+</nav>
+
+<div id="welcome" class="section">
+<div>
+<h1>Where Capital Meets Opportunity</h1>
+<p>Discover verified investors and growing or struggling companies</p>
+<button class="action" onclick="show('login')">Join / Invest</button>
+</div>
+</div>
+
+<div class="container">
+
+<!-- LOGIN -->
+<div id="login" class="section card">
+<h3>Login / Signup</h3>
+<select id="role">
+<option value="investor">Investor</option>
+<option value="company">Company</option>
+<option value="admin">Admin</option>
+</select>
+<input id="name" placeholder="Full Name">
+<input id="email" placeholder="Email">
+<button class="action" onclick="login()">Continue</button>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard" class="section">
+<div id="investorDash" class="card">
+<h3>Investor Dashboard <span class="tag blue">Investor</span></h3>
+<p id="invName"></p>
+<canvas id="roiChart"></canvas>
+</div>
+
+<div id="companyDash" class="card">
+<h3>Company Dashboard <span class="tag green">Company</span></h3>
+<p>Turnover ₹12 Cr | Margin 32%</p>
+<canvas id="turnoverChart"></canvas>
+</div>
+
+<div id="adminDash" class="card">
+<h3>Admin Dashboard <span class="tag orange">Admin</span></h3>
+<canvas id="platformChart"></canvas>
+</div>
+</div>
+
+<!-- COMPANIES -->
+<div id="companies" class="section">
+<h2>Companies</h2>
+<div id="companiesGrid" class="grid" aria-live="polite"></div>
+</div>
+
+<!-- INVESTORS -->
+<div id="investors" class="section">
+<h2>Investors</h2>
+<div id="investorsGrid" class="grid" aria-live="polite"></div>
+</div>
+
+</div>
+
+<footer>© 2026 E-Investors Platform</footer>
+
+<!-- CHAT -->
+<div id="chatBtn" onclick="toggleChat()">💬</div>
+<div id="chatbox">
+<div id="chatHeader">Investree AI</div>
+<div id="chatBody"><p><b>Investree:</b> Ask me about ROI or companies.</p></div>
+<input id="chatInput" placeholder="Ask Investree..." onkeypress="chat(event)">
+</div>
+
+<script>
+function show(id){
+document.querySelectorAll('.section').forEach(s=>s.style.display='none');
+document.getElementById(id).style.display='block';
+}
+
+function login(){
+const name=document.getElementById("name").value.trim();
+const email=document.getElementById("email").value.trim();
+const role=document.getElementById("role").value;
+if(!name||!email){alert("Fill all details");return;}
+localStorage.setItem("user",JSON.stringify({name,role}));
+show("dashboard");loadDash();
+}
+
+function loadDash(){
+const u=JSON.parse(localStorage.getItem("user"));
+investorDash.style.display=u.role==="investor"?"block":"none";
+companyDash.style.display=u.role==="company"?"block":"none";
+adminDash.style.display=u.role==="admin"?"block":"none";
+if(u.role==="investor")
+invName.innerText="Welcome "+u.name[0]+"***";
+drawCharts();
+}
+
+function logout(){localStorage.clear();show("welcome");}
+
+
+
+function toggleChat(){
+chatbox.style.display=chatbox.style.display==="block"?"none":"block";
+}
+
+function chat(e){
+if(e.key!=="Enter")return;
+chatBody.innerHTML+=`<p><b>You:</b> ${chatInput.value}</p>
+<p><b>Investree:</b> Average ROI is around 30%.</p>`;
+chatInput.value="";
+chatBody.scrollTop=chatBody.scrollHeight;
+}
+
+</script>
+<script src="assets/app.js"></script>
+</body>
+</html>
